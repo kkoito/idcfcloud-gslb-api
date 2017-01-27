@@ -1,0 +1,74 @@
+#スクリプト概要
+IDCF　クラウドGSLBにレコードを登録するためのツールになります。
+一つのラベルに対して、2つの分散対象のIPを以下の形式で登録します。
+■タイプ:A
+■ゾーン名：任意
+■GSLB:有効
+■TTL:5(Default)
+■値・詳細
+【IP1】
+IPv4アドレス:IP1   重み:1  ヘルスチェック:なし
+【IP2】
+IPv4アドレス:IP2   重み:0  ヘルスチェック:なし
+
+
+#ファイル
+sigu_post.php
+->クラウドDNSのAPIで使うシグネチャを生成
+
+make_record_gslb.sh
+->API実行するexec_post_api.shを作成するスクリプト
+
+check_record_gslb.sh
+->登録したレコードをdigチェックして、結果をcheck_record.logに出すスクリプト
+
+xxx.list
+->登録したレコードをCVSで羅列したリスト
+
+var.list
+->変数リスト
+
+#使い方①:GSLBレコード登録
+・APIキー、シークレットキー、ゾーンUUIDを記載
+$ vi sigu_post.php
+ex)
+	$api_key = 'xxxxxxxx';
+	$secret_key = 'xxxxxxxx';
+	$path = '/api/v1/zones/xxxxxxxx/records';
+
+・登録するラベルとリソースデータをCSVで羅列（順番：①ラベル,②データ1,③データ2）※複数行可
+$ vi xxx.list
+ex)
+	sample1,192.0.2.1,203.0.113.1
+	sample2,192.0.2.2,203.0.113.2
+	sample3,192.0.2.3,203.0.113.3
+
+・GSLBとして管理するゾーンを記載
+$ vi var.list
+ex)
+	GSLBDOMAIN='exampel.com'
+
+・API実行ファイル作成(APIファイルがCSVファイル行の2倍あればOK)
+$ sh make_record_gslb.sh xxx.list
+ex)
+	CSVファイル:
+	3 hrs.list
+
+	APIファイル:
+	6 exec_post_api.sh
+
+・API実行ファイル実行
+$ sh exec_post_api.sh
+
+#使い方②:レコード登録確認（GSLBレコード登録で使ったxxx.listを確認用として使用）
+・確認スクリプト実行（データ1が2桁目、データ2を1桁目とし、1が確認する、0が確認しないフラグ）
+$ sh check_record_gslb.sh xxx.list [10,11,01]
+ex)
+
+	CVEファイル行数
+	3 xxx.list
+	
+	LOGファイル行数
+	3 check_record.log
+	OK: チェック失敗レコード件数 0
+

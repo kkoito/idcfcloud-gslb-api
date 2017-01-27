@@ -1,0 +1,25 @@
+#変数一覧
+#POST
+APIKEY=`grep "api_key =" sigu_post.php |awk '{print $3}'|sed -e "s/'//g" -e "s/;//g"`
+SIG_POST=`php sigu_post.php`
+UUID=`grep "path =" sigu_post.php |awk '{print $3}'|awk -F"zones/" '{print $2}'|awk -F"/records" '{print $1}'`
+CURL_POST="curl -X POST -H 'Content-Type: application/json' -H \"X-IDCF-APIKEY:${APIKEY}\" -H \"X-IDCF-Signature:${SIG_POST}\" -d"
+RECORDS_POST="https://dns.idcfcloud.com/api/v1/zones/${UUID}/records"
+GSLBDOMAIN='.gslb.hrs.egg.jp'
+#GSLBDOMAIN='.gslb.recop.jp'
+LOG=check_record.log
+API=exec_post_api.sh
+NS='@ns01.idcfcloud.com'
+#GET
+CURL_GET="curl -X GET -H 'Content-Type: application/json' -H \"X-IDCF-APIKEY:${APIKEY}\" -H \"X-IDCF-Signature:${SIG_GET}\" -d"
+SIG_GET=`php sigu_get.php`
+RECORDS_GET="https://dns.idcfcloud.com/api/v1/zones/${UUID}"
+RECORDLOG=get_record.log
+UUIDLIST=uuid.list
+#PUT
+#SIG_PUT=`php sigu_put.php`
+SIG_PUT_PHP=sigu_put.php
+#CURL_PUT="curl -X PUT -H 'Content-Type: application/json' -H \"X-IDCF-APIKEY:${APIKEY}\" -H \"X-IDCF-Signature:${SIG_PUT}\" -d"
+RECORDS_PUT="https://dns.idcfcloud.com/api/v1/zones/${UUID}/records"
+API_PUT=exec_put_api.sh
+#test
