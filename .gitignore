@@ -1,6 +1,4 @@
 *csv
-sigu_get.php
-sigu_post.php
-sigu_put.php
+*.php
 exec*
 *.log
