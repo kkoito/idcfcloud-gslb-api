@@ -46,7 +46,7 @@ ex)
 ・GSLBとして管理するゾーンを記載
 $ vi var.list
 ex)
-	GSLBDOMAIN='exampel.com'
+	GSLBDOMAIN='.exampel.com'
 
 ・API実行ファイル作成(APIファイルがCSVファイル行の2倍あればOK)
 $ sh make_record_gslb.sh xxx.list
